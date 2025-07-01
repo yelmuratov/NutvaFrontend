@@ -32,7 +32,7 @@ type DuplicateResponse = {
   };
 };
 
-const baseUrl = "https://crm.nutva.uz/rest/4/0rmhzl4g9pnvvw0c/";
+const baseUrl = "https://crm.nutva.uz/rest/4/0rmhzl4g9pnvvw0c";
 
 export async function POST(req: NextRequest) {
   const body: BitrixRequestBody = await req.json();
