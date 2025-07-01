@@ -238,6 +238,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, dealId });
   } catch (error) {
     console.error("Bitrixga yuborishda xatolik:", error);
-    return NextResponse.json({ message: "Ichki server xatosi" }, { status: 500 });
+    return NextResponse.json({ message: "Ichki server xatosi bitrix xabar ketpedi" }, { status: 500 });
   }
 }
