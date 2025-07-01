@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
 	// domains: ["http://nutva-11a7ac0c0873.herokuapp.com/uploads"],
-	eslint: { ignoreDuringBuilds: true },
+
 	images: {
 		// domains: ["nutva-11a7ac0c0873.herokuapp.com", "www.nutvahealth.uz"],
 		remotePatterns: [

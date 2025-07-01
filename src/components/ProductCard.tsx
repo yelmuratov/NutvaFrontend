@@ -5,6 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import NoImage from "@/assets/images/noimage.webp";
+import { Button } from "./ui/button";
+import { useCart } from "@/context/CartContext";
+import { toast } from "react-toastify";
+import { GetOneProductType } from "@/types/products/getOneProduct";
 
 type ProductCardProps = {
   id: string;
@@ -14,12 +18,14 @@ type ProductCardProps = {
   description: string;
   price?: number;
   image: string[];
-  className?: string
-  style?: React.CSSProperties,
-  imagePriority?: boolean,
-  index?: number,
-  activeColor?: string
-}
+  className?: string;
+  style?: React.CSSProperties;
+  imagePriority?: boolean;
+  index?: number;
+  activeColor?: string;
+  addToCart?: () => void;
+  product?: GetOneProductType;
+};
 
 const ProductCard = ({
   id,
@@ -32,38 +38,75 @@ const ProductCard = ({
   style,
   imagePriority,
   index,
-  activeColor
+  activeColor,
+  product
 }: ProductCardProps) => {
-
+  const { addToCart } = useCart();
   const { t } = useTranslation();
+
+  const handleAddToCart = () => {
+    if (!product || !product.id) return;
+    addToCart({ ...product, quantity: 1 });
+    toast.success(t("product.addedToCart"), {
+      position: "top-center",
+      autoClose: 1200,
+    });
+  };
 
   return (
     <div
-      style={{ backgroundColor: bgColor ? bgColor : "white", ...style }}
-      className={`w-full h-auto shadow-[10px_15px_15px_rgba(0,0,0,0.1),_10px_15px_15px_rgba(0,0,0,0.1)] rounded flex flex-col lg:flex-row items-center justify-between ${className}`}
+      style={{ backgroundColor: bgColor || "white", ...style }}
+      className={`w-full relative rounded-xl max-[1024px]:w-[500px] min-h-[400px] max-[950px]:mt-30 max-[950px]:w-[450px] max-[800]:w-[350px] flex flex-col-reverse lg:flex-row items-center justify-between shadow-lg ${className}`}
     >
-      <div className="w-full lg:w-[55%] p-6 text-center lg:text-left">
-        <h2 className="text-white text-2xl sm:text-3xl md:text-4xl font-semibold mb-5">{title}</h2>
-        <span className="text-white text-lg sm:text-xl mb-6 block">{slug}</span>
-        <p className="text-white text-sm sm:text-base md:text-md mt-6 mb-5">{description}</p>
-        <div className="mt-4 flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4">
+      <div className="w-full px-6 pt-6 pb-10 lg:text-left flex flex-col gap-6">
+        <div>
+          <h2 className="text-white text-2xl sm:text-3xl md:text-4xl font-semibold mb-3">{title}</h2>
+          <span className="text-white text-lg sm:text-xl mb-4 block">{slug}</span>
+          <p className="text-white text-sm sm:text-base md:text-md">{description}</p>
+        </div>
+
+        {/* Buy / Add to cart */}
+        <div className="flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4">
           <Link
             href={`/product/${id}`}
             style={{ color: activeColor }}
-            className="bg-white font-bold px-4 py-2 rounded-lg transition-all"
+            className="bg-white font-bold px-6 py-2 rounded-lg transition-all w-full sm:w-auto text-center"
           >
             {t("common.buy")}
           </Link>
+
+          <Button
+            size="lg"
+            onClick={handleAddToCart}
+            className="w-full sm:w-auto text-center"
+          >
+            {t("product.addToCart")}
+          </Button>
+        </div>
+
+        {/* More link at bottom on mobile */}
+        <div className="block sm:hidden text-center mt-2">
           <Link
             href={`/product/${id}`}
-            className="text-white font-semibold bg-transparent underline px-4 py-2"
+            className="text-white font-semibold underline px-6 py-2 block"
+          >
+            {t("common.more")}
+          </Link>
+        </div>
+
+        {/* More link on desktop */}
+        <div className="hidden sm:block mt-2">
+          <Link
+            href={`/product/${id}`}
+            className="text-white font-semibold underline px-6 py-2 inline-block"
           >
             {t("common.more")}
           </Link>
         </div>
       </div>
 
-      <div className="w-full lg:w-[45%] mt-6 lg:mt-0 px-4">
+      {/* IMAGE SECTION */}
+      <div className="w-full lg:w-[45%] flex justify-center items-center p-6 pt-10 lg:pt-6">
         {image?.length > 0 ? (
           <Image
             src={image[0]}
@@ -71,7 +114,7 @@ const ProductCard = ({
             width={0}
             height={0}
             sizes="100vw"
-            className="w-full h-56 object-contain rounded"
+            className="w-full min-w-[300px] max-[950px]:absolute -top-25 h-56 object-contain"
             loading={index === 0 ? "eager" : "lazy"}
             priority={imagePriority}
             decoding="async"
@@ -83,7 +126,7 @@ const ProductCard = ({
             width={0}
             height={0}
             sizes="100vw"
-            className="w-full h-56 object-contain rounded"
+            className="w-full max-w-[300px] h-56 object-contain"
             loading={index === 0 ? "eager" : "lazy"}
             priority={imagePriority}
             decoding="async"
@@ -91,7 +134,7 @@ const ProductCard = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default ProductCard;

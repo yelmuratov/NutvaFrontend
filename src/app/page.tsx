@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// import Blogs from "@/containers/Blogs";
+import Blogs from "@/containers/Blogs";
 import HeroSection from "@/containers/HeroSection";
 import Products from "@/containers/Products";
 import AboutBrandSection from "@/containers/AboutBrandSection";
@@ -26,7 +26,7 @@ export default function App() {
     <main className="">
       <HeroSection />
       <Products isAviableBackground />
-      {/* <Blogs /> */}
+      <Blogs />
       <AboutBrandSection />
       <Reviews />
       <SaleSection />

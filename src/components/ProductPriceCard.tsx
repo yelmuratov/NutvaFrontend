@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLang } from "@/context/LangContext";
 import { GetOneProductType } from "@/types/products/getOneProduct";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,8 @@ import { cn } from "@/lib/utils";
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
 import { AnimatePresence, motion } from "framer-motion";
+import { useDiscount } from "@/hooks/useDiscount";
+import { useCart } from "@/context/CartContext";
 // import SuccessModal from "./SuccessModal";
 
 interface Props {
@@ -28,14 +30,6 @@ interface Props {
 
 const quantityOptions = [1, 2, 3];
 
-const DISCOUNT_TABLE: Record<string, { two: number; threePlus: number }> = {
-  VIRIS: { two: 16.7, threePlus: 27.8 },
-  FERTILIA: { two: 16.7, threePlus: 27.8 },
-  GELMIN: { two: 20, threePlus: 34 },
-  COMPLEX: { two: 22.7, threePlus: 36.4 },
-  EXTRA: { two: 22.7, threePlus: 36.4 },
-};
-
 export default function ProductPriceCard({ product, bgColor, color, onClick }: Props) {
   // const [showSuccessModal, setShowSuccessModal] = useState(false);
   // const [showFormModal, setShowFormModal] = useState(false);
@@ -45,6 +39,7 @@ export default function ProductPriceCard({ product, bgColor, color, onClick }: P
   const [quantity, setQuantity] = useState(1);
   const { t } = useTranslation();
   const { lang } = useLang();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     setMounted(true);
@@ -56,30 +51,9 @@ export default function ProductPriceCard({ product, bgColor, color, onClick }: P
   // };
 
   const localizedProduct = useLocalizedProduct(product, lang);
-  // const productKey = product?.slug?.toUpperCase();
+  const selectedQuantity = isChecked ? count! : quantity!;
+  const { basePrice, totalPrice, discountPercent } = useDiscount(localizedProduct?.name, selectedQuantity);
 
-  const { totalPrice, discountPercent } = useMemo(() => {
-    const basePrice = product.price;
-    const productKey = product?.slug?.toUpperCase() || "";
-
-    const discounts = DISCOUNT_TABLE[productKey] || { two: 0, threePlus: 0 };
-
-    let discount = 0;
-    if (quantity === 2) {
-      discount = discounts.two;
-    } else if (quantity >= 3) {
-      discount = discounts.threePlus;
-    }
-
-    const pricePerUnit = Math.round(basePrice * (1 - discount / 100));
-    const totalPrice = pricePerUnit * quantity;
-
-    return {
-      pricePerUnit,
-      totalPrice,
-      discountPercent: discount,
-    };
-  }, [quantity, product.price, product?.slug]);
 
   const handleClick = () => {
     // setShowFormModal(true);
@@ -92,21 +66,20 @@ export default function ProductPriceCard({ product, bgColor, color, onClick }: P
     }
   };
 
-  // const handleCheckboxChange = () => {
-  //   const newChecked = !isChecked;
-  //   setIsChecked(newChecked);
+  const handleAddToCart = () => {
+    if (!product || !product.id) return;
 
-  //   if (newChecked) {
-  //     setCount(quantity);
-  //   } else {
-  //     setQuantity(count);
-  //   }
-  // };
+    addToCart({
+      ...product,
+      quantity: selectedQuantity,
+    });
+    toast.success(t("product.addedToCart"), {
+      position: "top-center",
+      autoClose: 1200,
+    });
+  }
 
-  const selectedQuantity = isChecked ? count! : quantity!;
-
-  if (!product) return null;
-  if (!mounted) return null;
+  if (!product || !localizedProduct || !mounted) return null;
 
   return (
     <AnimatePresence mode="popLayout">
@@ -143,7 +116,7 @@ export default function ProductPriceCard({ product, bgColor, color, onClick }: P
                       -{discountPercent}%
                     </Badge>
                     <Badge className="bg-yellow-400 text-black text-base font-semibold px-2 py-1 rounded-full">
-                      {t("sale", "Распродажа")}
+                      {t("common.saleUpperCase")}
                     </Badge>
                   </div>
                 )}
@@ -160,10 +133,12 @@ export default function ProductPriceCard({ product, bgColor, color, onClick }: P
                   transition={{ duration: 0.3 }}
                   className="w-full rounded-xl flex flex-col gap-4"
                 >
-                  <div className="flex items-center text-base font-semibold text-red-600 gap-1 mb-4 bg-white p-4 rounded-lg">
-                    <Flame className="w-4 h-4" />
-                    {t("common.forYou")} {discountPercent}% {t("common.sale")} • {quantity} {t("common.quantity")}
-                  </div>
+                  {discountPercent > 0 && (
+                    <div className="flex items-center text-base font-semibold text-red-600 gap-1 mb-4 bg-white p-4 rounded-lg">
+                      <Flame className="w-4 h-4" />
+                      {t("common.forYou")} {discountPercent}% {t("common.sale")} • {isChecked ? count : quantity} {t("common.quantity")}
+                    </div>
+                  )}
                 </motion.div>
               </AnimatePresence>
 
@@ -278,30 +253,47 @@ export default function ProductPriceCard({ product, bgColor, color, onClick }: P
 
             </div>
 
-            <div style={{ color: color }} className="text-3xl font-bold mb-4">
-              {formatPrice(totalPrice)} {t("common.sum", "so'm")}
+            <div className="flex items-center gap-5 mb-4">
+              <div
+                style={{ color: selectedQuantity === 1 ? color : "red" }}
+                className="text-3xl font-bold"
+              >
+                {formatPrice(totalPrice)} {t("common.sum", "so'm")}
+              </div>
+              {!(selectedQuantity === 1) ? (
+                <span className="text-gray-500 text-lg line-through">
+                  {formatPrice(basePrice * selectedQuantity)} {t("common.sum")}
+                </span>
+              ) : null}
             </div>
 
+            {/* <div className="flex items-center justify-start gap-5"> */}
             <FormModal
-              // onClose={() => setShowFormModal(false)}
-              // onSuccess={handleSuccess}
-              // productName={localizedProduct?.name}
-              quantity={selectedQuantity}
+              products={[{ productId: product.id, quantity: selectedQuantity }]}
               btnColor={color}
-              productId={product?.id}
             >
               <Button
                 size={"lg"}
                 onClick={handleClick}
-                style={{ backgroundColor: color, padding: "1.6rem" }}
+                style={{ backgroundColor: color, padding: "1.5rem" }}
                 className={cn(
                   bgColor ? `bg-${bgColor}` : null,
-                  "w-full text-white text-lg font-semibold rounded-lg cursor-pointer transition-all"
+                  "w-full mb-5 text-white text-lg font-semibold rounded-lg cursor-pointer transition-all"
                 )}
               >
                 {t("common.buy")}
               </Button>
             </FormModal>
+
+            <Button
+              size={"lg"}
+              style={{ backgroundColor: color, padding: "1.5rem" }}
+              onClick={handleAddToCart}
+              className="w-full text-white text-lg font-semibold rounded-lg cursor-pointer transition-all"
+            >
+              {t("product.addToCart")}
+            </Button>
+            {/* </div> */}
 
             {/* {showSuccessModal && (
           <SuccessModal onClose={() => setShowSuccessModal(false)} />
