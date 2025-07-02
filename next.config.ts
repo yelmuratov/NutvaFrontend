@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "nutvahealth.uz",
+        hostname: "api.nutvahealth.uz",
         port: "",
         pathname: "/uploads/**",
       },
