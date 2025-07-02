@@ -66,7 +66,7 @@ const Blogs = () => {
         return (b.views ?? 0) - (a.views ?? 0);
       } else {
         return (
-          new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
       }
     })

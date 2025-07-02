@@ -17,7 +17,8 @@ export default function BuyModalContainer() {
 
   return (
     <FormModal
-      products={[{ productId, quantity }]}
+      productId={productId}
+      quantity={quantity}
       btnColor={color}
       onClose={closeBuyModal}
     >
