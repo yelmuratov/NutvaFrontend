@@ -154,10 +154,10 @@ export function FormModal({ children, products, btnColor }: FormModalProps) {
       },
       onError: (err: unknown) => {
         const message =
-          typeof err === "object" && err !== null && "message" in err
-            ? (err as { message?: string }).message
-            : undefined;
-        toast.error(message || t("errors.badRequest") || "Xatolik yuz berdi");
+          err && typeof err === "object" && "message" in err && typeof (err as { message?: unknown }).message === "string"
+            ? (err as { message: string }).message
+            : t("errors.badRequest") || "Xatolik yuz berdi";
+        toast.error(message);
       },
     });
     purchaseProduct({

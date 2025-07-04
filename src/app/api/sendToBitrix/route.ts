@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
+<<<<<<< HEAD
   const baseUrl = "https://crm.nutva.uz/rest/4/0rmhzl4g9pnvvw0c";
 
   const getProductName = (id: string): string => {
@@ -33,13 +34,28 @@ export async function POST(req: NextRequest) {
       "913d886c-940e-46c4-8fe4-17db725dbbee": "Gelmin Kids",
       "4dcfe3bc-0c43-4cef-bcf1-3bba8ac0c682": "Virus Men",
       "f9440b15-e98c-4a7f-a8a7-311a431c8fd0": "Fertilia Women"
+=======
+  const baseUrl = "https://crm.nutva.uz/rest/4/7irbhunnsb0rj0x9";
+
+  const getProductName = (id: string): string => {
+    const map: Record<string, string> = {
+      "b992bcdb-c472-4c22-8a79-daf18b9d3ea0": "Complex",
+      "1bb3b587-7441-4990-9832-a7d0716c0acb": "Complex Extra",
+      "8bed60a5-463c-4f4a-bfb3-ea5fc0498fc2": "Gelmin Kids",
+      "45a51307-e017-49f0-a250-357ea36d66b7": "Virus (M)",
+      "a646aaef-9633-4b42-bfde-01d1eb802038": "Fertilia (J)"
+>>>>>>> 4af8e5f04220e86d8ccf23ae88f76758f6bf03d1
     };
     return map[id] || `ID: ${id}`;
   };
 
   const getUnitPrice = (id: string, quantity: number): number => {
     const pricing: Record<string, { qty: number, price: number }[]> = {
+<<<<<<< HEAD
       "78a05bcd-d0d8-4f5e-8271-b6b879f06621": [
+=======
+      "b992bcdb-c472-4c22-8a79-daf18b9d3ea0": [
+>>>>>>> 4af8e5f04220e86d8ccf23ae88f76758f6bf03d1
         { qty: 5, price: 560000 },
         { qty: 3, price: 640000 },
         { qty: 2, price: 990000 },
@@ -180,7 +196,11 @@ export async function POST(req: NextRequest) {
       fields: {
         ENTITY_ID: dealId,
         ENTITY_TYPE: "deal",
+<<<<<<< HEAD
         COMMENT: `${repeatPrefix}📝 Yangi so‘rov saytdan\n👤 Ism: ${buyerName}\n📞 Telefon: +${phone}\n🎂 Yosh: ${age}\n🌍 Hudud: ${region}\n👥 Kim uchun: ${forWhom}\n🧠 Muammo: ${problem}\n💬 Izoh: ${comment || "Yo‘q"}\n\n🛍 Mahsulotlar:\n${productList}\n\n💰 Umumiy narx: ${totalAmount.toLocaleString()} so'm`
+=======
+        COMMENT: `${repeatPrefix}📝 Yangi so‘rov saytdan\n👤 Ism: ${buyerName}\n📞 Telefon: +${phone}\n🎂 Yosh: ${age}\n🌍 Hudud: ${region}\n👥 Kim uchun: ${forWhom}\n🧠 Muammo: ${problem}\n💬 Izoh: ${comment || "Yo‘q"}\n\n🛍 Mahsulotlar:\n${productList}\n\n💰 Umumiy narx: ${totalAmount.toLocaleString()} so'm\n\n🔗 UTM:\n- Source: ${utm_source || "-"}\n- Medium: ${utm_medium || "-"}\n- Campaign: ${utm_campaign || "-"}\n- Term: ${utm_term || "-"}\n- Content: ${utm_content || "-"}`
+>>>>>>> 4af8e5f04220e86d8ccf23ae88f76758f6bf03d1
       }
     })
   });

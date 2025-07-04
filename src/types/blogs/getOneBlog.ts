@@ -25,6 +25,8 @@ export type GetOneBlogType = {
   createdAt: Date | null;
   updatedAt: Date | null;
   published: boolean;
+  views: number | null;
+  slug: string;
 
   en: {
     title: string;
@@ -53,6 +55,4 @@ export type GetOneBlogType = {
     metaKeywords: string;
   };
   media: BlogMediaType[];
-  
-  views?: number;
 };
