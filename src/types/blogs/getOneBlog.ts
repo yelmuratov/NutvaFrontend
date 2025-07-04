@@ -53,5 +53,6 @@ export type GetOneBlogType = {
     metaKeywords: string;
   };
   media: BlogMediaType[];
-  views: number;
+  
+  views?: number;
 };
