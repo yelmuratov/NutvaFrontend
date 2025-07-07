@@ -12,12 +12,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatPrice } from "@/lib/formatPrice";
 import NoImage from "@/assets/images/noimage.webp";
-import { useTranslated } from "@/hooks/useTranslated";
+// import { useTranslated } from "@/hooks/useTranslated";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { toast } from "react-toastify";
 import EmptyCartImg from "@/assets/images/empty-cart-img.png";
 import Container from "@/components/Container";
+import { ProductName } from "@/types/enums";
 
 // type LangKey = "uz" | "ru" | "en";
 
@@ -39,7 +40,7 @@ export default function ProductsListPage() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const localized = useTranslated(products);
+  // const localized = useTranslated(products);
 
   if (isLoading || !products) {
     return (
@@ -55,6 +56,12 @@ export default function ProductsListPage() {
     );
   }
 
+  const excludedNames = [ProductName.VIRIS_MEN, ProductName.FERTILIA_WOMEN];
+
+  const visibleProducts = products.filter(
+    (product) => !excludedNames.includes(product.name as ProductName)
+  );
+
   if (!isMounted) return null;
 
   return (
@@ -66,7 +73,7 @@ export default function ProductsListPage() {
           </h1>
 
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((product) => {
+            {visibleProducts.map((product) => {
               const handleAdd = () => {
                 addToCart({
                   ...product,
@@ -87,7 +94,7 @@ export default function ProductsListPage() {
                     <div className="relative w-full h-[200px] overflow-hidden">
                       <Image
                         src={product.imageUrls?.[0] || NoImage}
-                        alt={localized?.name || "Product Image"}
+                        alt={product?.name || "Product Image"}
                         fill
                         className="object-contain cursor-pointer rounded-t-xl p-3"
                         onClick={() => router.push(`/product/${product.id}`)}
@@ -96,13 +103,13 @@ export default function ProductsListPage() {
                   </CardHeader>
                   <CardContent className="flex-grow space-t-2">
                     <CardTitle className="text-lg font-semibold line-clamp-1">
-                      {localized?.name}
+                      {product?.name}
                     </CardTitle>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {localized?.description}
-                    </p>
                     <p className="text-base mb-3 text-gray-500">
                       {product?.slug}
+                    </p>
+                    <p className="text-sm text-muted-foreground line-clamp-2 my-4">
+                      {product?.description}
                     </p>
                     <p className="text-base font-bold text-[#218A4F]">
                       {formatPrice(product.price)} {t("common.sum")}

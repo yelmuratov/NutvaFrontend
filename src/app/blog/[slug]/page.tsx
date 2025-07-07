@@ -7,10 +7,20 @@ type Props = {
   params: {
     slug: string;
   };
+  searchParams: {
+    lang?: string;
+  };
 };
 
-export async function generateMetadata({ params }: Props) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/BlogPost/${params.slug}`);
+export async function generateMetadata({ params, searchParams }: Props) {
+  const lang = searchParams.lang || "uz";
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/BlogPost/${params.slug}?lang=${lang}`,
+    {
+      cache: "no-store",
+    }
+  );
 
   if (!res.ok) {
     return {
@@ -20,23 +30,34 @@ export async function generateMetadata({ params }: Props) {
   }
 
   const post: GetOneBlogType = await res.json();
-  const localized = post["uz"]; // Fallback uchun. SEO static qismda tilni aniq bilolmaymiz
+
+  const imageUrls =
+    post.media
+      ?.filter((m) => m.mediaType === "Image" || m.mediaType === "ImageUrl")
+      .map((m) =>
+        m.url.startsWith("http")
+          ? m.url
+          : `https://www.api.nutvahealth.uz/uploads/${m.url}`
+      ) || [];
 
   return {
-    title: localized.metaTitle || localized.title,
-    description: localized.metaDescription || localized.content?.slice(0, 150),
-    keywords: localized.metaKeywords?.split(",") || [],
+    title: post.metaTitle || post.title,
+    description: post.metaDescription || post.content?.slice(0, 150),
+    keywords: post.metaKeywords?.split(",") || [],
     openGraph: {
-      title: localized.metaTitle || localized.title,
-      description: localized.metaDescription || localized.content?.slice(0, 150),
-      images: post?.media?.length ? [post?.media[0]] : [],
+      title: post.metaTitle || post.title,
+      description: post.metaDescription || post.content?.slice(0, 150),
+      images: imageUrls,
     },
   };
 }
 
-export default async function BlogPostPage({ params }: Props) {
+
+export default async function BlogPostPage({ params, searchParams }: Props) {
+  const lang = searchParams.lang || "uz";
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/BlogPost/${params.slug}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/BlogPost/${params.slug}?lang=${lang}`,
     {
       cache: "no-store",
     }
@@ -50,7 +71,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <Container className="pt-32 pb-25">
-      <BlogDetail blog={blog} />
+      <BlogDetail blog={blog} slug={params.slug} />
     </Container>
   );
 }

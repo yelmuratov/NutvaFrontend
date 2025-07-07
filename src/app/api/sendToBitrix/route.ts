@@ -1,5 +1,3 @@
-// ✅ Final version: Bitrix deal creation with proper TITLE, mapped product names, dynamic pricing, and total amount
-
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -13,12 +11,7 @@ export async function POST(req: NextRequest) {
     problem,
     region,
     comment,
-    products,
-    utm_source,
-    utm_medium,
-    utm_campaign,
-    utm_term,
-    utm_content,
+    products
   } = body;
 
   if (!buyerName || !phone || !age || !forWhom || !problem || !region) {
@@ -28,46 +21,47 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const baseUrl = "https://crm.nutva.uz/rest/4/7irbhunnsb0rj0x9";
+  const baseUrl = "https://crm.nutva.uz/rest/4/0rmhzl4g9pnvvw0c";
 
-  const getProductName = (id: string): string => {
-    const map: Record<string, string> = {
-      "b992bcdb-c472-4c22-8a79-daf18b9d3ea0": "Complex",
-      "1bb3b587-7441-4990-9832-a7d0716c0acb": "Complex Extra",
-      "8bed60a5-463c-4f4a-bfb3-ea5fc0498fc2": "Gelmin Kids",
-      "45a51307-e017-49f0-a250-357ea36d66b7": "Virus (M)",
-      "a646aaef-9633-4b42-bfde-01d1eb802038": "Fertilia (J)"
+  // ID mosligi: frontend ID ↔ Bitrix PRODUCT_ID
+  const getProductDetails = (id: string): { name: string, productId: number } => {
+    const map: Record<string, { name: string, productId: number }> = {
+      "2ca86164-5e10-449d-a854-b80f0173a3f5": { name: "Complex", productId: 5 },
+      "0406b946-cd9a-4171-91e2-e9f3e3016596": { name: "Complex Extra", productId: 6 },
+      "f3146c53-0e85-49d3-8a8f-017fc7baa97c": { name: "Gelmin Kids", productId: 7 },
+      "09de8997-9a58-429d-ba9f-8ac06c6dac05": { name: "Virus Men", productId: 8 },
+      "fcda59dd-a987-483b-9f82-9d937b004807": { name: "Fertilia Women", productId: 9 }
     };
-    return map[id] || `ID: ${id}`;
+    return map[id] || { name: `ID: ${id}`, productId: 0 };
   };
 
   const getUnitPrice = (id: string, quantity: number): number => {
-    const pricing: Record<string, { qty: number; price: number }[]> = {
-      "b992bcdb-c472-4c22-8a79-daf18b9d3ea0": [
+    const pricing: Record<string, { qty: number, price: number }[]> = {
+      "2ca86164-5e10-449d-a854-b80f0173a3f5": [
         { qty: 5, price: 560000 },
         { qty: 3, price: 640000 },
         { qty: 2, price: 990000 },
         { qty: 1, price: 1170000 }
       ],
-      "1bb3b587-7441-4990-9832-a7d0716c0acb": [
+      "0406b946-cd9a-4171-91e2-e9f3e3016596": [
         { qty: 5, price: 560000 },
         { qty: 3, price: 640000 },
         { qty: 2, price: 990000 },
         { qty: 1, price: 1170000 }
       ],
-      "8bed60a5-463c-4f4a-bfb3-ea5fc0498fc2": [
+      "f3146c53-0e85-49d3-8a8f-017fc7baa97c": [
         { qty: 5, price: 220000 },
         { qty: 3, price: 290000 },
         { qty: 2, price: 390000 },
         { qty: 1, price: 490000 }
       ],
-      "45a51307-e017-49f0-a250-357ea36d66b7": [
+      "09de8997-9a58-429d-ba9f-8ac06c6dac05": [
         { qty: 5, price: 390000 },
         { qty: 3, price: 490000 },
         { qty: 2, price: 690000 },
         { qty: 1, price: 860000 }
       ],
-      "a646aaef-9633-4b42-bfde-01d1eb802038": [
+      "fcda59dd-a987-483b-9f82-9d937b004807": [
         { qty: 5, price: 390000 },
         { qty: 3, price: 490000 },
         { qty: 2, price: 690000 },
@@ -84,6 +78,7 @@ export async function POST(req: NextRequest) {
     return rules[rules.length - 1].price;
   };
 
+  // 1. Kontaktni tekshirish yoki yaratish
   let contactId: number;
   const duplicateRes = await fetch(`${baseUrl}/crm.duplicate.findbycomm.json`, {
     method: "POST",
@@ -118,6 +113,7 @@ export async function POST(req: NextRequest) {
     contactId = contactData.result;
   }
 
+  // 2. Takroriy so‘rovni aniqlash
   let submissionCount = 1;
   if (isRepeat) {
     const timelineRes = await fetch(`${baseUrl}/crm.timeline.comment.list.json`, {
@@ -141,25 +137,33 @@ export async function POST(req: NextRequest) {
 
   const repeatPrefix = isRepeat ? `⚠️ Takroriy so‘rov (${submissionCount})\n` : "";
 
+  // 3. Mahsulotlarni hisoblash va tayyorlash
   let totalAmount = 0;
-  const productList = products?.length
-    ? products
-        .map((p: { productId: string; quantity: number }, i: number) => {
-          const name = getProductName(p.productId);
-          const unitPrice = getUnitPrice(p.productId, p.quantity);
-          const amount = unitPrice * p.quantity;
-          totalAmount += amount;
-          return `  ${i + 1}. ${name} - ${p.quantity} dona — ${amount.toLocaleString()} so'm`;
-        })
-        .join("\n")
-    : "  - Mahsulotlar yo‘q";
 
-  const firstProductName = products?.length
-    ? getProductName(products[0].productId)
-    : "Buyurtma";
+  const productRows = products.map((p: { productId: string; quantity: number }) => {
+    const { productId } = getProductDetails(p.productId);
+    const unitPrice = getUnitPrice(p.productId, p.quantity);
+    const amount = unitPrice * p.quantity;
+    totalAmount += amount;
 
+    return {
+      PRODUCT_ID: productId,
+      PRICE: unitPrice,
+      QUANTITY: p.quantity
+    };
+  });
+
+  const productListComment = products.map((p: { productId: string; quantity: number }, i: number) => {
+    const { name } = getProductDetails(p.productId);
+    const unitPrice = getUnitPrice(p.productId, p.quantity);
+    const amount = unitPrice * p.quantity;
+    return `  ${i + 1}. ${name} - ${p.quantity} dona — ${amount.toLocaleString()} so'm`;
+  }).join("\n");
+
+  const firstProductName = getProductDetails(products[0].productId).name;
   const dealTitle = `${buyerName} — ${firstProductName}`;
 
+  // 4. Сделка yaratish (Deal)
   const dealRes = await fetch(`${baseUrl}/crm.deal.add.json`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -169,7 +173,10 @@ export async function POST(req: NextRequest) {
         CONTACT_ID: contactId,
         SOURCE_ID: "WEB",
         CATEGORY_ID: 2,
-        STAGE_ID: "C2:EXECUTING"
+        STAGE_ID: "C2:EXECUTING",
+        OPPORTUNITY: totalAmount,
+        CURRENCY_ID: "UZS",
+        PRODUCT_ROWS: productRows
       }
     })
   });
@@ -177,6 +184,7 @@ export async function POST(req: NextRequest) {
   const dealData = await dealRes.json();
   const dealId = dealData.result;
 
+  // 5. Timeline komment
   await fetch(`${baseUrl}/crm.timeline.comment.add.json`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -184,7 +192,7 @@ export async function POST(req: NextRequest) {
       fields: {
         ENTITY_ID: dealId,
         ENTITY_TYPE: "deal",
-        COMMENT: `${repeatPrefix}📝 Yangi so‘rov saytdan\n👤 Ism: ${buyerName}\n📞 Telefon: +${phone}\n🎂 Yosh: ${age}\n🌍 Hudud: ${region}\n👥 Kim uchun: ${forWhom}\n🧠 Muammo: ${problem}\n💬 Izoh: ${comment || "Yo‘q"}\n\n🛍 Mahsulotlar:\n${productList}\n\n💰 Umumiy narx: ${totalAmount.toLocaleString()} so'm\n\n🔗 UTM:\n- Source: ${utm_source || "-"}\n- Medium: ${utm_medium || "-"}\n- Campaign: ${utm_campaign || "-"}\n- Term: ${utm_term || "-"}\n- Content: ${utm_content || "-"}`
+        COMMENT: `${repeatPrefix}📝 Yangi so‘rov saytdan\n👤 Ism: ${buyerName}\n📞 Telefon: +${phone}\n🎂 Yosh: ${age}\n🌍 Hudud: ${region}\n👥 Kim uchun: ${forWhom}\n🧠 Muammo: ${problem}\n💬 Izoh: ${comment || "Yo‘q"}\n\n🛍 Mahsulotlar:\n${productListComment}\n\n💰 Umumiy narx: ${totalAmount.toLocaleString()} so'm`
       }
     })
   });

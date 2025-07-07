@@ -2,8 +2,8 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import clsx from "clsx";
+import tinycolor from "tinycolor2";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -18,9 +18,10 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProductCard from "@/components/ProductCard";
 import Container from "@/components/Container";
-import { useTranslated } from "@/hooks/useTranslated";
 import "swiper/css/navigation";
 import "swiper/css";
+import { useLang } from "@/context/LangContext";
+import ContactFormModal from "@/components/ContactForm";
 
 const SkeletonCard = () => (
   <div className="p-4 rounded-xl bg-gray-200 border border-gray-300 shadow-md min-h-[350px] flex flex-col">
@@ -38,6 +39,7 @@ const Products = ({ isAviableBackground }: { isAviableBackground?: boolean }) =>
   const prevRef = useRef<HTMLButtonElement | null>(null);
   const nextRef = useRef<HTMLButtonElement | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const { lang } = useLang();
 
   useEffect(() => {
     setIsMounted(true);
@@ -47,8 +49,8 @@ const Products = ({ isAviableBackground }: { isAviableBackground?: boolean }) =>
     data: products = [],
     isLoading
   } = useQuery({
-    queryKey: ["products"],
-    queryFn: () => apiClient.getAllProducts("en"),
+    queryKey: ["products", lang],
+    queryFn: () => apiClient.getAllProducts(lang),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 5,
   });
@@ -84,11 +86,11 @@ const Products = ({ isAviableBackground }: { isAviableBackground?: boolean }) =>
     }
   }, [setupNavigation]);
 
-  const localized = useTranslated(products);
-  const activeProduct = useMemo(() => localized?.[activeIndex], [localized, activeIndex]);
+  const activeProduct = useMemo(() => products?.[activeIndex], [products, activeIndex]);
   const { color: activeColor, bgImage: activeBgImage } = useProductVisuals(activeProduct?.name as ProductName);
+  const hoverColor = tinycolor(activeColor).darken(10).toString();
 
-  if (!isMounted) return <SkeletonCard />;
+  if (!isMounted || isLoading) return <SkeletonCard />;
 
   return (
     <div className="products relative w-full py-10">
@@ -149,13 +151,13 @@ const Products = ({ isAviableBackground }: { isAviableBackground?: boolean }) =>
 
 
       >
-        {(isLoading || !products.length ? Array.from({ length: 5 }) : localized)?.map((product, index) => {
+        {products?.map((product, index) => {
           if (!product || !product.name) return null;
 
           const isActive = activeIndex === index;
           return (
             <SwiperSlide
-              key={index}
+              key={product.id || product.slug || index}
               className={clsx(
                 "w-[90vw]",
                 "sm:!w-[500px]",
@@ -200,13 +202,27 @@ const Products = ({ isAviableBackground }: { isAviableBackground?: boolean }) =>
       </Swiper>
 
       <div className="flex items-center justify-center mt-10">
-        <Link
+        <ContactFormModal>
+          <Button
+            style={{ backgroundColor: activeColor }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = hoverColor;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = activeColor;
+            }}
+            className="w-full md:w-[634px] h-[58px] text-white px-6 py-3 rounded-xl text-lg md:text-2xl cursor-pointer"
+          >
+            {t("product.consultation")}
+          </Button>
+        </ContactFormModal>
+        {/* <Link
           href="/contact"
           className="inline-flex items-center justify-center mx-auto text-white text-lg px-8 py-4 font-semibold rounded-lg shadow-md transition-all duration-500"
           style={{ backgroundColor: activeColor }}
         >
           {t("product.consultation")}
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

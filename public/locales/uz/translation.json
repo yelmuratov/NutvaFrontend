@@ -13,9 +13,11 @@
 		"ok": "OK",
 		"sum": "so'm",
 		"loading": "Yuklanmoqda...",
+        "goBack": "Orqaga",
 		"more": "Batafsil",
 		"quantity": "dona",
 		"sale": "chegirma",
+        "clearCart": "Savatni tozalash",
 		"saleUpperCase": "Chegirma",
 		"forYou": "Siz uchun",
 		"ourProducts": "Bizning mahsulotlarimiz",
@@ -24,7 +26,8 @@
 		"total": "Jami",
 		"yourCart": "Sizning savatingiz",
 		"emptyCart": "Sizning savatingiz bo'sh",
-        "blogs": "Bloglar"
+        "blogs": "Bloglar",
+        "soon": "Tez orada sotuvga chiqadi..."
 	},
 
 	"errors": {
@@ -77,7 +80,7 @@
 
 	"aboutBrand": {
 		"title": "Brend haqida",
-		"text": "Nutva Pharm — bu sog'lom hayot tarzi uchun yaratilgan, tabiiy va samarali biofaol qo'shimchalar ishlab chiqaruvchi zamonaviy brend. Bizning asosiy maqsadimiz — inson salomatligini qo'llab-quvvatlash, immunitetni mustahkamlash va organizmga zarar yetkazmasdan foyda beradigan yechimlarni taqdim etishdir.2020-yilda Nutva Pharm o'zining ilk mahsuloti — Nutva Complex orqali O'zbekiston, O'rta Osiyo va Rossiya bozorlarida e'tirof etila boshladi. Dastlab mahalliy bozorni o'rganib, mijozlar ehtiyojiga mos maxsus tarkiblar asosida mahsulotlar yaratildi. Bugungi kunga kelib, Nutva Pharm assortimentida bolalar, ayollar, erkaklar va keksa yoshdagilar uchun alohida liniyalar mavjud. Biz har bir mahsulotni puxta ilmiy yondashuv, ekologik toza xomashyo va xalq tabobatining eng yaxshi an'analari asosida ishlab chiqamiz. Nutva Pharm — bu shunchaki biofaol qo'shimcha emas, bu — tabiat va ilm uyg'unligidagi sog'lom yashash falsafasi."
+		"text": "Nutva Pharm — bu sog'lom hayot tarzi uchun yaratilgan, tabiiy va samarali biofaol qo'shimchalar ishlab chiqaruvchi zamonaviy brend. Bizning asosiy maqsadimiz — inson salomatligini qo'llab-quvvatlash, immunitetni mustahkamlash va organizmga zarar yetkazmasdan foyda beradigan yechimlarni taqdim etishdir. 2020-yilda Nutva Pharm o'zining ilk mahsuloti — Nutva Complex orqali O'zbekiston, O'rta Osiyo va Rossiya bozorlarida e'tirof etila boshladi. Dastlab mahalliy bozorni o'rganib, mijozlar ehtiyojiga mos maxsus tarkiblar asosida mahsulotlar yaratildi. Bugungi kunga kelib, Nutva Pharm assortimentida bolalar, ayollar, erkaklar va keksa yoshdagilar uchun alohida liniyalar mavjud. Biz har bir mahsulotni puxta ilmiy yondashuv, ekologik toza xomashyo va xalq tabobatining eng yaxshi an'analari asosida ishlab chiqamiz. Nutva Pharm — bu shunchaki biofaol qo'shimcha emas, bu — tabiat va ilm uyg'unligidagi sog'lom yashash falsafasi."
 	},
 
 	"aboutUs": {
@@ -122,6 +125,7 @@
 	"form": {
 		"title": "Bolangiz salomatligi uchun bugunoq buyurtma bering",
 		"subtitle": "🚚 O'zbekiston bo'ylab bepul yetkazib berish",
+        
 		"input": {
 			"name": "Ism",
 			"phone": "Telefon raqam",
@@ -131,36 +135,49 @@
 			"region": "Viloyat",
 			"comment": "Qo'shimcha ma'lumot",
 			"productName": "Mahsulot nomi",
-			"quantity": "Miqdori"
+			"quantity": "Miqdori",
+            "message": "Xabar"
 		},
 
 		"errors": {
 			"nameRequired": "Ism kiritilishi shart",
 			"phoneRequired": "Telefon raqami to'liq bo'lishi kerak",
+            "phoneNotValid": "Iltimos telefon raqamingizni kiriting!",
 			"ageRequired": "Yosh kiritilishi shart",
 			"forWhomRequired": "Kim uchun kiritilishi shart",
 			"problemRequired": "Shikoyat kiritilishi shart",
 			"regionRequired": "Viloyat kiritilishi shart",
-			"productNameRequired": "Mahsulot nomi kiritilishi shart"
+			"productNameRequired": "Mahsulot nomi kiritilishi shart",
+            "requestFailed": "Xatolik yuz berdi"
 		},
 
 		"success": "Buyurtma muvaffaqiyatli qabul qilindi",
+        "applicationSuccess": "Ariza muvaffaqiyatli yuborildi",
 		"fillAllFields": "Barcha maydonlarni to'ldiring",
 		"searchCountry": "Qidirish...",
-		"searchCountryNotFound": "Ushbu davlat topilmadi"
-	},
+		"searchCountryNotFound": "Ushbu davlat topilmadi",
+        
+        "email": "Email",
+        "shortNumber": "Qisqa raqami"
+    },
 
 	"formModal": {
-		"title": "Farzandingiz salomatligiga oid savollaringiz bormi? Raqamingizni qoldiring.",
-		"subtitle": "Bizning malakali shifokorlarimiz sizga bepul maslahat berish uchun tez orada bog'lanadi."
+		"title": "To'liq ma'lumot va buyurtma uchun:",
+		"subtitle": "Ismingiz va telefon raqamingiz hamda quyidagi ma'lumotlarni qoldiring - mutaxassislarimiz siz bilan bog'lanadi!"
 	},
+
+    "contactModal": {
+        "title": "Salomatligingiz bo'yicha savolingiz bormi?",
+        "subtitle": "Raqamingizni qoldiring — shifokorlarimiz bepul maslahat uchun tez orada bog'lanadi."
+    },
 
 	"button": {
 		"heroButton": "Buyurtma berish",
 		"consultationButton": "Konsultatsiya olish",
 		"freeConsultation": "Bepul konsultatsiya",
 		"formButton": "Ariza qoldirish",
-		"cancelButton": "Bekor qilish"
+		"cancelButton": "Bekor qilish",
+        "sendMessage": "Xabarni yuborish"
 	},
 
 	"products": {
@@ -228,10 +245,11 @@
 				}
 			}
 		},
+
         "additional": {
             "title": "Qo'shimcha:",
             "1": "Quyidagi kasalliklarda samarali yordam beradi:",
-            "2": "Orqa umurtqa hernisi - orqa umurtqa diskining tashqi qobig'ining buzilishi;",
+            "2": "Orqa umurtqa churrasi - orqa umurtqa diskining tashqi qobig'ining buzilishi;",
             "3": "Koksartroz - son bo'g'imining eroziyasi;",
             "4": "Gonartroz - tizza bo'g'imining surunkali degenerativ kasalligi;",
             "5": "Poliartrit - bo'g'imlarning yallig'lanishi;",
@@ -240,8 +258,56 @@
 	},
 
     "about": {
+        "features": "Xususiyatlari",
+        "whyChoose": "Nutvani  nima uchun tanlash kerak?",
+
+        "accordionQuestions": {
+            "1": "Tabiiy tarkib",
+            "2": "Natijasi isbotlangan",
+            "3": "Shifokorlar bilan hamkorlik",
+            "4": "Ishonchli va qulay"
+        },
+
+        "accordionContent": {
+            "1": "Barcha mahsulotlarimiz o'simlik ekstraktlari, minerallar va foydali vitaminlar asosida yaratilgan. Bo'yoqlar, antibiotiklar va konservantlar yo'q.",
+            "2": "Yurtimiz bo'ylab minglab odamlar Nutva bilan sog'lig'ini tikladi. Ularning hikoyalari — bizning faxrimiz va biz ularni YouTube kanalimizga joylab boramiz.",
+            "3": "Nutva mahsulotlari tajribali mutaxassislar bilan ishlab chiqiladi va shifokorlar tomonidan tavsiya etilmoqda. Mijozlarimiz doimiy tibbiy nazorat ostida va viloyatlararo bepul ko'riklar tashkil qilinib kelinmoqda",
+            "4": "Mahsulotlarimiz xalqaro sifat standartlariga javob beradi. Qadoqlari esa tushunarli va foydalanishga qulay."
+        },
         
+        "faqTitle": "Ko'p so'raladigan savollar",
+
+        "faq": {
+            "title": {
+                "1": "Nutva nima uchun ichiladi?",
+                "2": "Tarkibida kimyoviy moddalar yoki gormon bormi?",
+                "3": "Nutva qaysi davlatda ishlab chiqarilgan?",
+                "4": "Qanday ichiladi? Dozalash qanday?",
+                "5": "Necha oy ichish kerak?",
+                "6": "Natijasi qachon bilinadi?",
+                "7": "Yoshi katta insonlar ichsa bo'ladimi?",
+                "8": "Qo'shimcha dori yoki davolash kerakmi?",
+                "9": "Homiladorlar yoki emizikli ayollar ichishi mumkinmi?",
+                "10": "Qayerdan xarid qilish mumkin?"
+            },
+
+            "content": {
+                "1": "Bu mahsulot suyak, bo'g'im kasalliklari  uchun iste'mol qilinadi.",
+                "2": "Yo'q. Faqatgina tabiiy giyohlarni ekstraktlari, gormon va kimyoviy moddalarsiz tayyorlangan.",
+                "3": "O'zbekistonda, xalqaro GMP standartlariga mos ishlab chiqarilgan.",
+                "4": "10 kun 1 mahal (1 kapsula), keyin esa har kuni 2 kapsuladan ovqatdan keyin suv bilan ichiladi. Bir qutida 60 kapsula - bu 1 oyga yetadi.",
+                "5": "Kasallik darajasiga qarab. Odatda - 12 oylik kurs tavsiya qilinadi. Doimiy kasalliklarda esa uzoqroq muddat davom ettiriladi.",
+                "6": "Har bir organizm har xil. Lekin o'rtacha 6 oy ichida sezilarli yengillik bo'lishi mumkin.",
+                "7": "Albatta. Bu mahsulot aynan katta yoshdagilar uchun foydali bo'lib, pensiya yoshidagilarda ko'p qo'llaniladi.",
+                "8": "Odatda Nutva o'zi yetarli bo'ladi. Ammo og'ir holatlarda shifokor bilan maslahatlashgan holda qo'shimcha muolajalar ham tavsiya etiladi.",
+                "9": "Homiladorlik davrida mumkin emas. Emizikli paytida mumkin.",
+                "10": "Telegram sahifasi: https://t.me/nutvauz Qisqa raqam: 📞 1294 (bepul) Yoki Uzum Market orqali onlayn xarid qilish mumkin."
+            }
+        }
+    },
+
+    "contact": {
+        "title": "Biz bilan bog'laning",
+        "subtitle": "Mahsulot va xizmatlarimiz bo'yicha savollaringizga javob berishdan mamnunmiz."
     }
-
-
 }

@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { Button } from "./ui/button";
 import { AnimatePresence, motion } from "framer-motion";
+import { useCart } from "@/context/CartContext";
 // import { AnimatePresence } from "framer-motion";
 
 const NavLink = ({
@@ -46,6 +47,8 @@ const Header: React.FC = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
   const { t } = useTranslation();
+  const { cart } = useCart();
+  const cartCount = cart.length;
 
   useEffect(() => {
     setMounted(true);
@@ -58,7 +61,7 @@ const Header: React.FC = () => {
     { href: "/blog", label: t("nav.blog") },
     { href: "/contact", label: t("nav.contact") },
     // { href: "/admin", label: "Admin" },
-  ], [t]);
+  ].filter(link => !!link.href && !!link.label), [t]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -140,8 +143,8 @@ const Header: React.FC = () => {
             </Link>
             <nav className="hidden md:flex mt-2 items-center">
               <ul className="flex space-x-5">
-                {navLinks.map((item, idx) => (
-                  <li key={`navigationlink-${idx}`}>
+                {navLinks.map((item) => (
+                  <li key={`${item.href}-${item.label}`}>
                     <NavLink href={item.href}>{item.label}</NavLink>
                   </li>
                 ))}
@@ -149,14 +152,19 @@ const Header: React.FC = () => {
             </nav>
             <div className="flex items-center justify-between gap-5">
               {/* <div className="flex items-center justify-between"> */}
-              <Link href="/cart">
+              <Link href="/cart" className="relative">
                 <ShoppingCart className="cursor-pointer" size={25} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
               </Link>
               <LanguageSwitcher />
               {/* </div> */}
               <Button
                 size={"icon"}
-                className="md:hidden flex items-center justify-center border p-2"
+                className="md:hidden flex items-center justify-center border p-2 cursor-pointer"
                 onClick={() => setMobileMenu(true)}
                 aria-label="Open menu"
               >
@@ -205,7 +213,7 @@ const Header: React.FC = () => {
               <Button
                 size={"icon"}
                 onClick={() => setMobileMenu(false)}
-                className="text-white p-2 text-2xl border"
+                className="text-white p-2 text-2xl border cursor-pointer"
                 aria-label="Close menu"
               >
                 <X size={32} />
@@ -214,7 +222,7 @@ const Header: React.FC = () => {
             <nav className="flex flex-col items-center mt-10 gap-6 mb-8">
               {navLinks.map((item, idx) => (
                 <NavLink
-                  key={`navlink-${idx}`}
+                  key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenu(false)}
                   className="text-2xl"
