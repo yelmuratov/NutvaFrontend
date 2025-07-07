@@ -42,7 +42,7 @@ export default function BlogsPage() {
             }
         }
 
-        const response =  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Blog`, {
+        const response = await fetch("/api/Blog", {
             method: "POST",
             headers: {
                 // "Content-Type": "multipart/form-data",

@@ -13,7 +13,7 @@ import YouTubeEmbed from "@/components/YouTubeEmbed";
 import { useLang } from "@/context/LangContext";
 import { Button } from "@/components/ui/button";
 
-export default function BlogDetail({ blog: initalBlog, slug }: { blog: GetOneBlogType, slug: string }) {
+export default function BlogDetail({ blog: initalBlog, id }: { blog: GetOneBlogType, id: string }) {
   const [mounted, setMounted] = useState(false);
   const [blog, setBlog] = useState<GetOneBlogType>(initalBlog);
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ export default function BlogDetail({ blog: initalBlog, slug }: { blog: GetOneBlo
       setLoading(true);
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/BlogPost/${slug}?lang=${lang}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/BlogPost/${id}?lang=${lang}`,
           {
             cache: "no-store",
           }
@@ -58,7 +58,7 @@ export default function BlogDetail({ blog: initalBlog, slug }: { blog: GetOneBlo
 
       fetchBlogData();
     }
-  }, [lang, isLoading, mounted, slug, router, searchParams]);
+  }, [lang, isLoading, mounted, id, router, searchParams]);
 
   if (!mounted || !blog) return null;
 
@@ -154,14 +154,14 @@ export default function BlogDetail({ blog: initalBlog, slug }: { blog: GetOneBlo
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">{blog.title}</h1>
 
-            {blog.views && (
+            {blog.viewCount ? (
               <div className="flex items-center justify-center gap-3">
                 <Eye size={20} />
                 <p className="text-gray-500 text-base">
-                  <span className="font-semibold">{blog.views}</span> views
+                  <span className="font-semibold">{blog.viewCount}</span> views
                 </p>
               </div>
-            )}
+            ) : null}
 
             {blog?.createdAt && (
               <div className="flex items-center justify-center gap-3">
