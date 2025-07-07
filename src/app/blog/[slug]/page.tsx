@@ -12,7 +12,10 @@ type Props = {
   };
 };
 
-export async function generateMetadata({ params, searchParams }: Props) {
+// --- FIXED METADATA FUNCTION ---
+export async function generateMetadata(props: Props) {
+  const params = await props.params;
+  const searchParams = await props.searchParams;
   const lang = searchParams.lang || "uz";
 
   const res = await fetch(
@@ -52,8 +55,10 @@ export async function generateMetadata({ params, searchParams }: Props) {
   };
 }
 
-
-export default async function BlogPostPage({ params, searchParams }: Props) {
+// --- FIXED PAGE FUNCTION ---
+export default async function BlogPostPage(props: Props) {
+  const params = await props.params;
+  const searchParams = await props.searchParams;
   const lang = searchParams.lang || "uz";
 
   const res = await fetch(
