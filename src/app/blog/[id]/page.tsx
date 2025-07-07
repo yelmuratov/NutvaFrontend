@@ -60,7 +60,7 @@ export default async function BlogPostPage({ params, searchParams }: Props) {
   const resolvedSearchParams = await searchParams;
   
   const lang = resolvedSearchParams.lang || "uz";
-
+  console.log('API_URL:', process.env.NEXT_PUBLIC_API_URL)
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/BlogPost/${resolvedParams.id}?lang=${lang}`,
     {
