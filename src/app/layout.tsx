@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/next-script-for-ga */
 /* eslint-disable @next/next/no-img-element */
-import { Geist, Geist_Mono } from "next/font/google";
+// import { Geist, Geist_Mono } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
@@ -18,15 +18,15 @@ import TrackVisit from "@/components/TrackVisit";
 import BuyModalContainerDynamic from "@/components/BuyModalContainerDynamic";
 
 // Fonts
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// const geistSans = Geist({
+//   variable: "--font-geist-sans",
+//   subsets: ["latin"],
+// });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// const geistMono = Geist_Mono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+// });
 
 export default function RootLayout({
   children,
@@ -98,7 +98,8 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
+      {/* Remove font vars from className */}
+      <body className="antialiased" suppressHydrationWarning>
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
@@ -131,25 +132,25 @@ export default function RootLayout({
           </div>
         </noscript>
         {/* <AuthProvider> */}
-          <QueryProvider>
-            <LangProvider>
-              <RawCartProvider>
-                <BuyProvider>
-                  <Layout>
-                    {/* Server-side / Static components */}
-                    <TrackVisit />
-                    <InjectPixelScript />
-                    {children}
+        <QueryProvider>
+          <LangProvider>
+            <RawCartProvider>
+              <BuyProvider>
+                <Layout>
+                  {/* Server-side / Static components */}
+                  <TrackVisit />
+                  <InjectPixelScript />
+                  {children}
 
-                    {/* Client-only components */}
-                    <BuyModalContainerDynamic />
-                    <ToastContainer />
+                  {/* Client-only components */}
+                  <BuyModalContainerDynamic />
+                  <ToastContainer />
 
-                  </Layout>
-                </BuyProvider>
-              </RawCartProvider>
-            </LangProvider>
-          </QueryProvider>
+                </Layout>
+              </BuyProvider>
+            </RawCartProvider>
+          </LangProvider>
+        </QueryProvider>
         {/* </AuthProvider> */}
       </body>
     </html>
