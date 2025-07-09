@@ -1,3 +1,5 @@
+ 
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -33,6 +35,7 @@ import { getProductKeyFromName } from "@/helper/getProductKeyFromName";
 import { getProductDetailMiddleImage } from "@/helper/getProductDetailMiddleImage";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
 import { getProductMedia } from "@/helper/getProductMedia";
+import { useCart } from "@/context/CartContext";
 
 const certificateImages = [
   CertificateImg1,
@@ -48,6 +51,7 @@ export default function ProductDetailPage() {
   const { id } = useParams();
   const { lang } = useLang();
   const { t } = useTranslation();
+  const { cart } = useCart();
 
   const { data: product = {} as GetOneProductType, isLoading } = useQuery({
     queryKey: ["product", id, lang],
@@ -77,6 +81,14 @@ export default function ProductDetailPage() {
   }
 
   const handleBuyClick = async () => apiClient.postBuyProduct(id as string);
+
+  // const tabContent = t(`products.${productKey}.tab.1`, { returnObjects: true }) as Record<string, any>;
+  // const staticTabs = ["1", /* "2", "3", */ "4"];
+  // const dynamicTabKeys = Object.keys(tabContent).filter((key) => key !== "1");
+  // const allTabKeys = [...dynamicTabKeys, ...staticTabs];
+
+
+    console.log("CART:", cart);
 
   return (
     <div className="relative pt-32 overflow-hidden">
@@ -135,7 +147,7 @@ export default function ProductDetailPage() {
 
             <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="my-10">
               <TabsList className="grid grid-cols-4 sm:grid-cols-4 max-[450px]:grid-cols-3 max-[350px]:grid-cols-2 mb-5 justify-center gap-4 bg-transparent">
-                {["1", /*"2", "3",*/ "4"].map((tab) => (
+                {(product?.name === ProductName.GELMIN_KIDS ? ["1", /* "2", "3", */ "5", "4"] : ["1", /* "2", "3", */ "4"]).map((tab) => (
                   <TabsTrigger
                     key={`tab-${tab}-${lang}`}
                     value={tab}
@@ -255,11 +267,11 @@ export default function ProductDetailPage() {
                               {t(`products.additional.${index + 1}`)}
                             </li>
                           ))}
-                            {product?.name === ProductName.COMPLEX && (
-                              <li className="text-base">
-                                
-                              </li>
-                            )}
+                          {product?.name === ProductName.COMPLEX && (
+                            <li className="text-base">
+
+                            </li>
+                          )}
                         </ul>
                       </div>
 
@@ -376,6 +388,28 @@ export default function ProductDetailPage() {
                         </div>
                       </div>
                     </TabsContent>
+
+                      <TabsContent value="5">
+                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 my-12">
+                          <ul className="space-y-6 list-disc list-inside">
+                          <h3 className="text-lg font-bold mb-6">{t("products.gelminKids.tab.gijjalar.1.title")}</h3>
+                            {Array.from({ length: 5 }).map((item, idx) => (
+                              <li key={`${item}-${idx}`} className="text-base font-medium">
+                                {t(`products.gelminKids.tab.gijjalar.1.${idx + 1}`)}
+                              </li>
+                            ))}
+                          </ul>
+
+                          <ul className="space-y-6 list-disc list-inside">
+                          <h3 className="text-lg font-bold mb-6">{t("products.gelminKids.tab.gijjalar.2.title")}</h3>
+                            {Array.from({ length: 2 }).map((item, idx) => (
+                              <li key={`${item}-${idx}`} className="text-base font-medium">
+                                {t(`products.gelminKids.tab.gijjalar.2.${idx + 1}`)}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </TabsContent>
                   </Container>
                 </motion.div>
               </AnimatePresence>
